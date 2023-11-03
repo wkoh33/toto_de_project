@@ -1,0 +1,19 @@
+version: "3"
+services:
+  load_winning_numbers:
+    build:
+      context: ./load_winning_numbers
+      dockerfile: Dockerfile
+    image: load_winning_numbers:latest
+
+  load_winning_outlets:
+    build:
+      context: ./load_winning_outlets
+      dockerfile: Dockerfile
+    image: load_winning_outlets:latest
+
+  load_winning_shares:
+    build:
+      context: ./load_winning_shares
+      dockerfile: Dockerfile
+    image: load_winning_shares:latest
