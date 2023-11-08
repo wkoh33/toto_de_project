@@ -5,6 +5,9 @@ import boto3
 import json
 import random
 import time
+import os
+
+client = boto3.client('s3')
 
 def process_prize_amount(soup):
     prize_amount = soup.find('table', { 'class' : 'jackpotPrizeTable' }).find('td').text
@@ -58,4 +61,14 @@ def handler(event, context):
     # Get winning shares
     winning_shares_json = process_winning_shares(soup, winning_shares_json, draw_date)
     
-    return winning_shares_json
+    # Save to s3
+    bucket = os.environ['S3_BUCKET_NAME']
+    year = draw_date.split('-')[0]
+    month = draw_date.split('-')[1]
+    day = draw_date.split('-')[2]
+
+    client.put_object(
+        Body=json.dumps(winning_shares_json),
+        Bucket=bucket,
+        Key=f"winning_shares/{year}/{month}/{day}/{querystring}.json"
+    )

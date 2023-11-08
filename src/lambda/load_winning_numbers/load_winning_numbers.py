@@ -5,6 +5,7 @@ import boto3
 import json
 import random
 import time
+import os
 
 client = boto3.client('s3')
 
@@ -37,5 +38,15 @@ def handler(event, context):
 
     # Get winning numbers and additional number
     winning_num_json = process_winning_num(soup, draw_date)
-    
-    return winning_num_json
+
+    # Save to s3
+    bucket = os.environ['S3_BUCKET_NAME']
+    year = draw_date.split('-')[0]
+    month = draw_date.split('-')[1]
+    day = draw_date.split('-')[2]
+
+    client.put_object(
+        Body=json.dumps(winning_num_json),
+        Bucket=bucket,
+        Key=f"winning_numbers/{year}/{month}/{day}/{querystring}.json"
+    )

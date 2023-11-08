@@ -6,6 +6,9 @@ import boto3
 import json
 import random
 import time
+import os
+
+client = boto3.client('s3')
 
 def process_outlets(outlets, prize_group, df):
     for outlet_entry in outlets:
@@ -105,4 +108,14 @@ def handler(event, context):
     # Get winning outlets
     winning_outlets_df = process_winning_outlets(soup, draw_date)
     
-    return winning_outlets_df.to_json(orient="records")
+    # Save to s3
+    bucket = os.environ['S3_BUCKET_NAME']
+    year = draw_date.split('-')[0]
+    month = draw_date.split('-')[1]
+    day = draw_date.split('-')[2]
+
+    client.put_object(
+        Body=winning_outlets_df.to_csv(index=False),
+        Bucket=bucket,
+        Key=f"winning_outlets/{year}/{month}/{day}/{querystring}.csv"
+    )
