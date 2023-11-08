@@ -17,3 +17,9 @@ services:
       context: ./lambda/load_winning_shares
       dockerfile: Dockerfile
     image: toto_load_winning_shares:latest
+
+  test_duckdb:
+    build:
+      context: ./lambda/test_duckdb
+      dockerfile: Dockerfile
+    image: test_duckdb:latest

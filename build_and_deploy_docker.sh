@@ -12,7 +12,8 @@ cd src
 docker-compose build
 
 # docker images
-images=("toto_load_winning_numbers" "toto_load_winning_outlets" "toto_load_winning_shares")
+# images=("test_duckdb")
+images=("toto_load_winning_numbers" "toto_load_winning_outlets" "toto_load_winning_shares" "test_duckdb")
 
 # tag docker image
 for image in "${images[@]}"; do

@@ -41,12 +41,9 @@ def handler(event, context):
 
     # Save to s3
     bucket = os.environ['S3_BUCKET_NAME']
-    year = draw_date.split('-')[0]
-    month = draw_date.split('-')[1]
-    day = draw_date.split('-')[2]
 
     client.put_object(
         Body=json.dumps(winning_num_json),
         Bucket=bucket,
-        Key=f"winning_numbers/{year}/{month}/{day}/{querystring}.json"
+        Key=f"data/raw/winning_numbers/{draw_date}.json"
     )

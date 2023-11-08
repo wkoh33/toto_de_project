@@ -110,12 +110,9 @@ def handler(event, context):
     
     # Save to s3
     bucket = os.environ['S3_BUCKET_NAME']
-    year = draw_date.split('-')[0]
-    month = draw_date.split('-')[1]
-    day = draw_date.split('-')[2]
 
     client.put_object(
         Body=winning_outlets_df.to_csv(index=False),
         Bucket=bucket,
-        Key=f"winning_outlets/{year}/{month}/{day}/{querystring}.csv"
+        Key=f"data/raw/winning_outlets/{draw_date}.csv"
     )
