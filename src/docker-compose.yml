@@ -2,18 +2,18 @@ version: "3"
 services:
   toto_load_winning_numbers:
     build:
-      context: ./load_winning_numbers
+      context: ./lambda/load_winning_numbers
       dockerfile: Dockerfile
     image: toto_load_winning_numbers:latest
 
   toto_load_winning_outlets:
     build:
-      context: ./load_winning_outlets
+      context: ./lambda/load_winning_outlets
       dockerfile: Dockerfile
     image: toto_load_winning_outlets:latest
 
   toto_load_winning_shares:
     build:
-      context: ./load_winning_shares
+      context: ./lambda/load_winning_shares
       dockerfile: Dockerfile
     image: toto_load_winning_shares:latest

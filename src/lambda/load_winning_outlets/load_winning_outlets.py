@@ -89,20 +89,20 @@ def process_winning_outlets(soup, draw_date):
     return df
 
 def handler(event, context):
-    for record in event['Records']:
-        querystring = record["body"]
-        # querystring = "sppl=RHJhd051bWJlcj0zNjE0"
-        URL = "https://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx?" + querystring
-        
-        time.sleep(random.randint(1, 5))
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.content, "html.parser")
+    querystring = event["querystring"]
+    # querystring = "sppl=RHJhd051bWJlcj0zNjE0"
+    URL = "https://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx?" + querystring
+    
+    time.sleep(random.randint(1, 5))
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
 
-        # Get draw date
-        draw_date_string = soup.find('th', { 'class' : 'drawDate' }).text
-        parsed_date = datetime.strptime(draw_date_string, "%a, %d %b %Y")
-        draw_date = parsed_date.strftime("%Y-%m-%d")
+    # Get draw date
+    draw_date_string = soup.find('th', { 'class' : 'drawDate' }).text
+    parsed_date = datetime.strptime(draw_date_string, "%a, %d %b %Y")
+    draw_date = parsed_date.strftime("%Y-%m-%d")
 
-        # Get winning outlets
-        winning_outlets_df = process_winning_outlets(soup, draw_date)
-        print(winning_outlets_df)
+    # Get winning outlets
+    winning_outlets_df = process_winning_outlets(soup, draw_date)
+    
+    return winning_outlets_df.to_json(orient="records")

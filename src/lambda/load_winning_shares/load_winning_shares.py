@@ -38,24 +38,24 @@ def process_winning_shares(soup, winning_shares_json, draw_date):
     return winning_shares_json
 
 def handler(event, context):
-    for record in event['Records']:
-        querystring = record["body"]
-        # querystring = "sppl=RHJhd051bWJlcj0zNjE0"
-        URL = "https://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx?" + querystring
-        
-        time.sleep(random.randint(1, 5))
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.content, "html.parser")
+    querystring = event["querystring"]
+    # querystring = "sppl=RHJhd051bWJlcj0zNjE0"
+    URL = "https://www.singaporepools.com.sg/en/product/Pages/toto_results.aspx?" + querystring
+    
+    time.sleep(random.randint(1, 5))
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
 
-        # Get draw date
-        draw_date_string = soup.find('th', { 'class' : 'drawDate' }).text
-        parsed_date = datetime.strptime(draw_date_string, "%a, %d %b %Y")
-        draw_date = parsed_date.strftime("%Y-%m-%d")
+    # Get draw date
+    draw_date_string = soup.find('th', { 'class' : 'drawDate' }).text
+    parsed_date = datetime.strptime(draw_date_string, "%a, %d %b %Y")
+    draw_date = parsed_date.strftime("%Y-%m-%d")
 
-        # Get Group 1 prize amount
-        prize_amount = process_prize_amount(soup)
-        winning_shares_json = {'prize_amount': prize_amount}
+    # Get Group 1 prize amount
+    prize_amount = process_prize_amount(soup)
+    winning_shares_json = {'prize_amount': prize_amount}
 
-        # Get winning shares
-        winning_shares_json = process_winning_shares(soup, winning_shares_json, draw_date)
-        print(winning_shares_json)
+    # Get winning shares
+    winning_shares_json = process_winning_shares(soup, winning_shares_json, draw_date)
+    
+    return winning_shares_json
