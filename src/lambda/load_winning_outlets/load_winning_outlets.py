@@ -19,6 +19,13 @@ def process_outlets(outlets, prize_group, df):
 
     return df
 
+def extract_outlet_address(outlet_address):
+    outlet_address = outlet_address.split(' - ')
+    outlet = outlet_address[0].strip()
+    address = '-'.join(outlet_address[1:]).strip()
+
+    return outlet, address
+
 def process_entry(outlet_entry, prize_group):
     tmp_df = pd.DataFrame()
 
@@ -26,9 +33,7 @@ def process_entry(outlet_entry, prize_group):
     if 'iTOTO - System 12' in outlet_entry:
         outlets = outlet_entry.split("•")[1:]
         for outlet_address in outlets:
-            outlet_address = outlet_address.split('-')
-            outlet = outlet_address[0].strip()
-            address = '-'.join(outlet_address[1:]).strip()
+            outlet, address = extract_outlet_address(outlet_address)
 
             tmp_df = tmp_df._append({
                 'prize_group': prize_group,
@@ -40,9 +45,7 @@ def process_entry(outlet_entry, prize_group):
             }, ignore_index=True)
     else:
         outlet_address = outlet_entry.split(" ( ")[0].strip()
-        outlet_address = outlet_address.split('-')
-        outlet = outlet_address[0].strip()
-        address = '-'.join(outlet_address[1:]).strip()
+        outlet, address = extract_outlet_address(outlet_address)
 
         entry = outlet_entry.split(" ( ")[1].strip()
         count = int(entry.split(" ")[0].strip())
@@ -111,8 +114,9 @@ def handler(event, context):
     # Save to s3
     bucket = os.environ['S3_BUCKET_NAME']
 
-    client.put_object(
-        Body=winning_outlets_df.to_csv(index=False),
-        Bucket=bucket,
-        Key=f"data/raw/winning_outlets/{draw_date}.csv"
-    )
+    if len(winning_outlets_df) > 0:
+        client.put_object(
+            Body=winning_outlets_df.to_csv(index=False, sep='\t'),
+            Bucket=bucket,
+            Key=f"data/raw/winning_outlets/{draw_date}.tsv"
+        )
