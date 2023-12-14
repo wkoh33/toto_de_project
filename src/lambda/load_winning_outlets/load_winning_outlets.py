@@ -41,7 +41,7 @@ def process_entry(outlet_entry, prize_group):
                 'address': address,
                 'count': 1,
                 'entry': 'iTOTO - System 12',
-                'is_quickpick': 0
+                'is_quickpick': 1
             }, ignore_index=True)
     else:
         outlet_address = outlet_entry.split(" ( ")[0].strip()
